@@ -27,6 +27,15 @@ SFP designed for discovering places with real-time search suggestions, interacti
 * **Consistent Dark Theme:** A cohesive user interface with a dark background, vibrant accents, and clean typography, inspired by Modern's design.
 
 
+## Android Sample Video 
+https://github.com/user-attachments/assets/e753e45c-54a1-4033-89e1-21827c73e290
+
+
+## IOS Sample Video 
+https://github.com/user-attachments/assets/acc88ee1-0c3b-48f2-b4fa-46332451134f
+
+
+
 ## 🚀 Getting Started
 
 Follow these instructions to set up and run the project on your local machine.
