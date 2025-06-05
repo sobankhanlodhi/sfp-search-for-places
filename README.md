@@ -1,97 +1,165 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# SFP - Search For Places
 
-# Getting Started
+SFP designed for discovering places with real-time search suggestions, interactive maps, and a persistent history of selected locations, featuring a clean UI.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## ✨ Features
 
-## Step 1: Start Metro
+* **Welcome Screen:** A user-friendly introductory screen with a "Get Started" button.
+* **Location Permissions:** Robust handling of location permissions, guiding users to settings if necessary.
+* **Tab Navigation:** Intuitive bottom tab navigation for "Home" (Search) and "History" sections.
+* **Real-time Place Search:**
+    * Powered by the **Google Maps Places API** for accurate, real-time suggestions.
+    * Suggestions displayed in a list.
+* **Interactive Map View:**
+    * Upon selecting a place, navigate to a detailed view showing the location on an interactive **Google Map**.
+    * Displays a marker for the selected place.
+* **Place Details:** Presents relevant information about the selected place, including:
+    * Place Name
+    * Address
+    * Phone Number (if available)
+    * Website (if available)
+    * Rating and User Reviews (if available)
+* **Search History:**
+    * Automatically records all places a user has clicked on from the search suggestions.
+    * **Persistent Storage:** History data is saved locally using for a seamless user experience across sessions.
+    * Allows revisiting previously searched locations from the History tab.
+    * **"Clear History" Button:** Provides an option to clear all saved search history with a confirmation prompt.
+* **Consistent Dark Theme:** A cohesive user interface with a dark background, vibrant accents, and clean typography, inspired by Modern's design.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## 🚀 Getting Started
 
-```sh
-# Using npm
-npm start
+Follow these instructions to set up and run the project on your local machine.
 
-# OR using Yarn
-yarn start
-```
+### Prerequisites
 
-## Step 2: Build and run your app
+Before you begin, ensure you have the following installed:
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+* **Node.js** (>=18 LTS version recommended)
+* **npm** or **Yarn** 
+* **React Native CLI:**
+* **Xcode** (for iOS development, from Mac App Store)
+* **Android Studio** (for Android development, with Android SDK and Emulator configured)
 
-### Android
 
-```sh
-# Using npm
-npm run android
+### 🔑 Google Cloud API Keys Setup (Crucial!)
 
-# OR using Yarn
-yarn android
-```
+This application uses Google Maps Platform APIs. You need to obtain several API keys and configure them correctly.
 
-### iOS
+1.  **Google Cloud Project Setup:**
+    * Go to the [Google Cloud Console](https://console.cloud.google.com/).
+    * Create a new project or select an existing one.
+    * Enable a **billing account** for your project. (Google Maps Platform APIs require a billing account, even for free tier usage.)
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+2.  **Enable APIs:**
+    * In the Google Cloud Console, navigate to `APIs & Services > Library`.
+    * Search for and **Enable** the following APIs:
+        * `Places API (New)` (for search suggestions and place details)
+        * `Maps SDK for Android`
+        * `Maps SDK for iOS`
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+3.  **Go To API & Services:**
+    * Click `+ CREATE CREDENTIALS > API key`.
+    * Copy this key.
 
-```sh
-bundle install
-```
+### API Key Configuration in The Project
 
-Then, and every time you update your native dependencies, run:
+**0. (Fastest) Open the project in VS code or any other IDE and Search for phrase `enter-your-api-key-here` in overall projct and just replace it with your API key**
 
-```sh
-bundle exec pod install
-```
+## For Longer way 
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+**1. `key.ts` file from sfp/src/constants:**
 
-```sh
-# Using npm
-npm run ios
+* Update `GOOGLE_API_KEY` with your actual key.
 
-# OR using Yarn
-yarn ios
-```
+**2. iOS Native Configuration (`ios/sfp/AppDelegate.swift`):**
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+* Open your Xcode project (`ios/sfp.xcworkspace`).
+* Navigate to `ios/sfp/AppDelegate.swift`.
+* Locate the `application(_:didFinishLaunchingWithOptions:)` method and modify the `GMSServices.provideAPIKey` line:
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+    ```swift
+    import GoogleMaps // Ensure this import is present
 
-## Step 3: Modify your app
+    // ... other code ...
 
-Now that you have successfully run the app, let's make changes!
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        GMSServices.provideAPIKey("YOUR_IOS_MAPS_SDK_API_KEY_HERE") // <-- Add/Update this line
+        // ... rest of file ...
+        return true
+    }
+    ```
+    (Replace `YOUR_IOS_MAPS_SDK_API_KEY_HERE` with the actual API key for Maps SDKs).
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+**3. Android Native Configuration (`android/app/src/main/AndroidManifest.xml`):**
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+* Open `android/app/src/main/AndroidManifest.xml`.
+* Locate the `<application>` tag and ensure it contains the `meta-data` tag for the Google Maps API key:
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+    ```xml
+    <application
+        android:name=".MainApplication"
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:allowBackup="false"
+        android:theme="@style/AppTheme">
 
-## Congratulations! :tada:
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="YOUR_ANDROID_MAPS_SDK_API_KEY_HERE"/> </application>
+    ```
+    (Replace `YOUR_ANDROID_MAPS_SDK_API_KEY_HERE` with the actual API key for Maps SDKs restricted to Android).
 
-You've successfully run and modified your React Native App. :partying_face:
 
-### Now what?
+### Installation
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+1.  **Clone the repository:**
+    ```bash
+    git clone git@github.com:sobankhanlodhi/sfp-search-for-places.git
+    ```
 
-# Troubleshooting
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+### Running the App
 
-# Learn More
+After configuring API keys, you need to clean and rebuild the native projects.
 
-To learn more about React Native, take a look at the following resources:
+1.  **Stop Metro Bundler** if it's running (`Ctrl + C` or `Cmd + C` in the terminal).
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+2.  **Run instructions for Android:**
+  * Have an Android emulator running (quickest way to get started), or a device connected.
+    ```bash
+    cd sfp
+     ```
+    ```bash 
+    npm run android
+    ```
+3. **Run instructions for iOS:**
+   ```bash 
+    cd sfp/ios
+    ```
+  * Install Cocoapods
+    ```bash 
+    bundle install # you need to run this only once in your project.
+    ```
+  * Pod install 
+    ```bash 
+     bundle exec pod install
+    ```
+
+  * Start metro 
+    ```bash 
+     npm run start
+    ```
+  
+  * Open your Xcode project (`ios/sfp.xcworkspace`)
+   and Hit the Run button
+
+---
